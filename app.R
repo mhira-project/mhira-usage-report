@@ -129,13 +129,14 @@ inactivity = inactivity(timeoutSeconds)
       print("rendering plots")
       
       assessments = assessments()
+      cols = c("#4DAF4A", "#E41A1C", "#377EB8", "#984EA3")
       
       df = assessments %>% 
         mutate(
           createdAt = lubridate::as_datetime(createdAt),
           updatedAt = lubridate::as_datetime(updatedAt),
           dateTime = createdAt,
-          status = factor(status, levels = c("COMPLETED", "CANCELLED", "OPEN_FOR_COMPLETION")))  %>%
+          status = factor(status, levels = c("COMPLETED", "CANCELLED", "OPEN_FOR_COMPLETION", "EXPIRED")))  %>%
         arrange(dateTime) %>%
         mutate(questInAssessment = map(assessments$questionnaires, nrow) %>% unlist) %>%
         group_by(status) %>% 
@@ -145,7 +146,8 @@ inactivity = inactivity(timeoutSeconds)
         geom_line(lwd = 1.3) + 
         geom_point(size = 2) + 
         ylab("cummulative number of questionnaires") + 
-        scale_colour_brewer(palette = "Set1", direction = -1) + 
+        scale_colour_manual(values = cols) +
+        scale_fill_manual(values = cols) +
         theme_light() 
       
       questCount = df %>% 
@@ -160,8 +162,8 @@ inactivity = inactivity(timeoutSeconds)
       instrument = ggplot(questCount, aes(x = abbreviation, y = n, colour = status, fill = status)) +
         geom_bar(stat = "identity", alpha = 0.3) + 
         geom_text(aes(y = pos, label = n, group = status)) +
-        scale_colour_brewer(palette = "Set1", direction = -1) +
-        scale_fill_brewer(palette = "Set1", direction = -1) +
+        scale_colour_manual(values = cols) +
+        scale_fill_manual(values = cols) +
         ylab("count") + 
         xlab("Instrument") +
         theme_light() +
