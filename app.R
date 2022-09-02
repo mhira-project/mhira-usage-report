@@ -24,10 +24,7 @@ source("graphql_functions/getAssessments.R")
 source("utility_functions/inactivity.R")
 
 
-
 inactivity = inactivity(timeoutSeconds)
-
-
 
 
 # USER INTERFACE ##------------------------------------------------------------
@@ -72,15 +69,9 @@ inactivity = inactivity(timeoutSeconds)
              plotOutput("instrument_plot"),
              br()
         ) 
-   
-     
-      
 
-      
       )
       
-    
-    
   # CLOSE USER INTERFACE UI ---------------------------------------------------
     
     )
@@ -113,7 +104,7 @@ inactivity = inactivity(timeoutSeconds)
     
     
 
-  # GET ASSESSMENT DATA ---------------------------------------------------
+  # GET ASSESSMENT DATA --------------------------------------------------------
   
     assessments = reactiveVal() # the imported data as dataframe
     
@@ -150,14 +141,12 @@ inactivity = inactivity(timeoutSeconds)
         group_by(status) %>% 
         mutate(questCount = cumsum(questInAssessment))
       
-      
       progress = ggplot(df, aes(x = dateTime, y = questCount, group = status, linetype = status, colour = status)) + 
         geom_line(lwd = 1.3) + 
         geom_point(size = 2) + 
         ylab("cummulative number of questionnaires") + 
         scale_colour_brewer(palette = "Set1", direction = -1) + 
         theme_light() 
-      
       
       questCount = df %>% 
         unnest(questionnaires) %>% 
@@ -167,7 +156,6 @@ inactivity = inactivity(timeoutSeconds)
         arrange(desc(status), abbreviation,  n) %>%
         group_by(abbreviation) %>%
         mutate(pos = cumsum(n) - 0.5 * n) 
-      
       
       instrument = ggplot(questCount, aes(x = abbreviation, y = n, colour = status, fill = status)) +
         geom_bar(stat = "identity", alpha = 0.3) + 
@@ -187,8 +175,6 @@ inactivity = inactivity(timeoutSeconds)
     
     }) 
       
-      
-  
 
   }
 
