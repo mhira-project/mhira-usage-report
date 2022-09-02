@@ -129,14 +129,14 @@ inactivity = inactivity(timeoutSeconds)
       print("rendering plots")
       
       assessments = assessments()
-      cols = c("#4DAF4A", "#E41A1C", "#377EB8", "#984EA3")
+      cols = c("#4DAF4A", "#E41A1C", "#377EB8", "#FF7F00", "#984EA3")
       
       df = assessments %>% 
         mutate(
           createdAt = lubridate::as_datetime(createdAt),
           updatedAt = lubridate::as_datetime(updatedAt),
           dateTime = createdAt,
-          status = factor(status, levels = c("COMPLETED", "CANCELLED", "OPEN_FOR_COMPLETION", "EXPIRED")))  %>%
+          status = factor(status, levels = c("COMPLETED", "CANCELLED", "OPEN_FOR_COMPLETION","PARTIALLY_COMPLETED", "EXPIRED")))  %>%
         arrange(dateTime) %>%
         mutate(questInAssessment = map(assessments$questionnaires, nrow) %>% unlist) %>%
         group_by(status) %>% 
